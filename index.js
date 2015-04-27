@@ -22,7 +22,7 @@ var debug = require('diagnostics')('git-shizzle')
  * @api public
  */
 function Git(dir) {
-  if (!(this instanceof Git)) return new Git();
+  if (!(this instanceof Git)) return new Git(dir);
 
   this.fuse();
   this.__dirname = dir;
