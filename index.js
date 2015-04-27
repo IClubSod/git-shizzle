@@ -129,14 +129,21 @@ shelly.exec(Git.path +' help -a', {
     if ('string' === typeof params)  git += params;
     if ('function' === typeof params) fn = params;
 
+    var cwd = shelly.pwd();
     shelly.cd(this.__dirname);
     debug('executing cmd', git);
 
     var res = shelly.exec(git.trim(), { silent: true }, fn ? function cb(code, output) {
+      shelly.cd(cwd); // Reset working directory when finished (async)
+      
       if (+code) return fn(new Error((output || 'Incorrect code #'+ code).trim()));
 
       fn(undefined, output);
     } : undefined);
+    
+    if (!fn) {
+      shelly.cd(cwd); // Reset working directory when finished (sync)
+    }
 
     //
     // Make sure we throw a code in sync mode instead of returning the error
